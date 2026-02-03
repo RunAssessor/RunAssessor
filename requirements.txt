@@ -5,4 +5,4 @@ scipy
 pyteomics
 pypdf
 pandas
-dateutil
+python-dateutil

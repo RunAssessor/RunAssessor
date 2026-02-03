@@ -29,7 +29,7 @@ dependencies = [
     "pyteomics",
     "pypdf",
 	"pandas",
-	"dateutil"
+	"python-dateutil"
 ]
 
 [tool.setuptools.package-data]
