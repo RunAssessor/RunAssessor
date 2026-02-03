@@ -26,7 +26,7 @@ warnings.filterwarnings("ignore", category=so.OptimizeWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 #### Import the metadata handler
-from metadata_handler import MetadataHandler
+from runassessor.metadata_handler import MetadataHandler
 
 
 ####################################################################################################
