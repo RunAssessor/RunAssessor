@@ -1,5 +1,8 @@
 __pycache__/
 .pytest_cache/
+build/
+src/runassessor.egg-info/
 study_metadata.json
+study_metadata.file_summary.tsv
 study_metadata.sdrf.tsv
 tests/data/study_metadata.txt
