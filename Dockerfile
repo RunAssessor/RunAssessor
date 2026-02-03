@@ -1,11 +1,10 @@
 FROM python:3
 
-WORKDIR /assessor
+WORKDIR /runassessor
 
-COPY requirements.txt /assessor
+COPY requirements.txt /runassessor
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY lib /assessor/lib
-COPY bin /assessor/bin
+COPY src/runassessor /runassessor/runassessor
 
-CMD ["bin/assess_mzMLs.py"]
+CMD ["runassessor/runassessor.py"]
