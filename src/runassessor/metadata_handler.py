@@ -136,19 +136,15 @@ class MetadataHandler:
             eprint(f"ERROR: Version {self.metadata['state']['version']} in file '{file}' is too old and is not supported anymore")
             n_errors += 1
 
-        if n_errors > 0:
+        #### If not successful, print out status
+        if self.metadata['state']['status'] != 'OK' or n_errors > 0:
+            eprint(f"{self.metadata['state']['status']}: Code '{self.metadata['state']['code']}': " +
+                   f"{self.metadata['state']['message']}")
             return
 
-        #### If verbose, print some information
         if self.verbose >= 1:
             eprint(f"INFO: Study metadata file '{file}' is loaded")
-            eprint(f"INFO: Status is {self.metadata['state']['status']}")
-            if self.metadata['state']['status'] != 'OK':
-                eprint(f"INFO: Code is '{self.metadata['state']['code']}'")
-                eprint(f"INFO: Message is '{self.metadata['state']['message']}'")
-                return
 
-        #### If we got this far, then everything seems okay
         return 'OK'
 
 
@@ -219,22 +215,18 @@ class MetadataHandler:
 
         self.sdrf_hints = sdrf_hints
 
-        if n_errors > 0:
+        #### If not successful, print out status
+        if self.metadata['state']['status'] != 'OK' or n_errors > 0:
+            eprint(f"{self.metadata['state']['status']}: Code '{self.metadata['state']['code']}': " +
+                   f"{self.metadata['state']['message']}")
             self.metadata['state']['status'] = 'ERROR'
             self.metadata['state']['code'] = 'TxtParseError'
             self.metadata['state']['message'] = f"{n_errors} errors parsing sdrf txt hints file"
+            return
 
-        #### If verbose, print some information
         if self.verbose >= 1:
-            eprint(f"INFO: Study metadata SDRF hints text file '{file}' is loaded")
-            eprint(f"INFO: Status is {self.metadata['state']['status']}")
-            if self.metadata['state']['status'] != 'OK':
-                eprint(f"INFO: Code is '{self.metadata['state']['code']}'")
-                eprint(f"INFO: Message is '{self.metadata['state']['message']}'")
-                return
+            eprint(f"INFO: Study metadata file '{file}' is loaded")
 
-        #### If we got this far, then everything seems okay
-        #eprint(json.dumps(sdrf_hints, indent=2, sort_keys=2))
         return 'OK'
 
 
