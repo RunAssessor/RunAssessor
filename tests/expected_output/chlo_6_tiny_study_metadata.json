@@ -1899,6 +1899,18 @@
   "state": {
     "code": "OK",
     "message": "No problems detected",
+    "problems": {
+      "errors": {
+        "codes": {},
+        "count": 0,
+        "list": []
+      },
+      "warnings": {
+        "codes": {},
+        "count": 0,
+        "list": []
+      }
+    },
     "status": "OK",
     "version": "v0.1"
   }
