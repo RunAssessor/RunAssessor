@@ -10,16 +10,14 @@ import numpy
 numpy.seterr(all='ignore')
 import gzip
 from lxml import etree
-from multiprocessing.pool import ThreadPool
 from functools import partial
 import math
 def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
 #### Import technical modules and pyteomics
 import matplotlib.pyplot as plt
-from scipy.stats import norm
 from scipy.optimize import curve_fit
-from pyteomics import mzml, auxiliary
+from pyteomics import mzml
 import warnings
 import scipy.optimize as so
 warnings.filterwarnings("ignore", category=so.OptimizeWarning)
@@ -229,7 +227,7 @@ class MzMLAssessor:
                         self.parse_filter_string(filter_string,stats)
                         if filter_string is None or filter_string == '':
                             #### MSFragger generated mzML can have empty filter strings
-                            self.log_event('WARNING','EmptyFilterLine',f"Filter line is present but empty. This can happen with MSFragger-written mzML. Not good.")
+                            self.log_event('WARNING','EmptyFilterLine',"Filter line is present but empty. This can happen with MSFragger-written mzML. Not good.")
                             stats[f"n_ms{ms_level}_spectra"] += 1
                             if ms_level > 1:
                                 stats['n_unknown_fragmentation_type_spectra'] += 1
@@ -760,7 +758,7 @@ class MzMLAssessor:
                     pass
                 else:
                     stats['fragmentation_type'] = 'multiple'
-                    self.log_event('ERROR','MultipleFragTypes',f"There are multiple fragmentation types in this MS run. Split them.")
+                    self.log_event('ERROR','MultipleFragTypes',"There are multiple fragmentation types in this MS run. Split them.")
 
 
         # If we have ms_level > 2, then make a note, but this is uncharted waters
@@ -1056,7 +1054,7 @@ class MzMLAssessor:
 
         #### If none are an instrument we know about about, ask for help
         if not found_instrument:
-            self.log_event('WARNING','UnrecogInstr',f"Did not find the instrument CV term. Please update RunAssessor with information about this instrument. Proceding as if it were a QTOF type instrument.")
+            self.log_event('WARNING','UnrecogInstr',"Did not find the instrument CV term. Please update RunAssessor with information about this instrument. Proceding as if it were a QTOF type instrument.")
             model_data = {
                 'accession': None,
                 'name': 'unknown',
@@ -1102,7 +1100,7 @@ class MzMLAssessor:
                 composite_type_list.append(supported_composite_type)
 
         if not composite_type_list:
-            self.log_event('WARNING','UnknownFragmentation',f"Not able to determine more about these spectra yet.")
+            self.log_event('WARNING','UnknownFragmentation',"Not able to determine more about these spectra yet.")
             return
         
         for composite_type in composite_type_list:
@@ -1254,7 +1252,7 @@ class MzMLAssessor:
                 composite_type_list.append(supported_composite_type)
 
         if not composite_type_list:
-            self.log_event('WARNING','UnknownFragmentation',f"Not able to determine more about these spectra yet.")
+            self.log_event('WARNING','UnknownFragmentation',"Not able to determine more about these spectra yet.")
             return
         for composite_type in composite_type_list:
             minimum = spec[composite_type]['minimum']
@@ -1477,7 +1475,7 @@ class MzMLAssessor:
 
                         self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance'][f'fragment_tolerance_{units}_lower'] = three_sigma_lower
                         self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance'][f'fragment_tolerance_{units}_upper'] = three_sigma_upper
-                        self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance'][f'number of peaks with fragment_tolerance'] = len(upper)
+                        self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance']['number of peaks with fragment_tolerance'] = len(upper)
                         if units == 'ppm':
                             recommended_precursor = math.ceil(math.sqrt(self.ppm_error**2 + (max(abs(three_sigma_lower), abs(three_sigma_upper))**2)))
                         elif units == 'mz':
