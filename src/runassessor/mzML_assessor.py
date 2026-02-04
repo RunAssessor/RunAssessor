@@ -7,12 +7,10 @@ import os.path
 import timeit
 import re
 import numpy
-numpy.seterr(all='ignore')
 import gzip
 from lxml import etree
 from functools import partial
 import math
-def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
 #### Import technical modules and pyteomics
 import matplotlib.pyplot as plt
@@ -20,11 +18,14 @@ from scipy.optimize import curve_fit
 from pyteomics import mzml
 import warnings
 import scipy.optimize as so
+
+from runassessor.metadata_handler import MetadataHandler
+
+numpy.seterr(all='ignore')
 warnings.filterwarnings("ignore", category=so.OptimizeWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-#### Import the metadata handler
-from runassessor.metadata_handler import MetadataHandler
+def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
 
 ####################################################################################################
@@ -57,7 +58,8 @@ class MzMLAssessor:
         self.precursor_stats = {}
 
         #### Set verbosity
-        if verbose is None: verbose = 0
+        if verbose is None:
+            verbose = 0
         self.verbose = verbose
 
         #### Set up type of units for ms/ms tolerances
@@ -455,9 +457,9 @@ class MzMLAssessor:
             bound_y_after = max(y_after, 1e-8)
 
             # Compute chi-squared
-            window_mask = (bin_centers_time >= t_before) & (bin_centers_time <= t_after)
-            counts_window = counts_time[window_mask]
-            expected_window = expected_counts[window_mask]
+            #window_mask = (bin_centers_time >= t_before) & (bin_centers_time <= t_after)
+            #counts_window = counts_time[window_mask]
+            #expected_window = expected_counts[window_mask]
 
             # Compute chi-squared within the window
             epsilon = 1e-8
@@ -590,14 +592,14 @@ class MzMLAssessor:
     ####################################################################################################
     #### Record the isolation window information and precursor ion and scan time information
     def record_isolation_window_stats(self, spectrum, stats, ms_one_tolerance_dict):
-        isolation_window_target_mz = None
+        #isolation_window_target_mz = None
         isolation_window_lower_offset = None
         isolation_window_upper_offset = None
         precursor_ion = None
         start_scan_time = None
 
         try:
-            isolation_window_target_mz = spectrum['precursorList']['precursor'][0]['isolationWindow']['isolation window target m/z']
+            #isolation_window_target_mz = spectrum['precursorList']['precursor'][0]['isolationWindow']['isolation window target m/z']
             isolation_window_lower_offset = spectrum['precursorList']['precursor'][0]['isolationWindow']['isolation window lower offset']
             isolation_window_upper_offset = spectrum['precursorList']['precursor'][0]['isolationWindow']['isolation window upper offset']
    
@@ -664,13 +666,17 @@ class MzMLAssessor:
         have_hcd = 0
         have_fragmentation = 0
         match = re.search(r'@hcd',filter_string)
-        if match: have_hcd = 1
+        if match:
+            have_hcd = 1
         match = re.search(r'@cid',filter_string)
-        if match: have_cid = 1
+        if match:
+            have_cid = 1
         match = re.search(r'@etd',filter_string)
-        if match: have_etd = 1
+        if match:
+            have_etd = 1
         match = re.search(r'@',filter_string)
-        if match: have_fragmentation = 1
+        if match:
+            have_fragmentation = 1
         dissociation_sum = have_cid + have_etd + have_hcd
         if have_fragmentation > dissociation_sum:
             self.log_event('ERROR','UnrecognizedFragmentation',f"Unrecognized string after @ in filter string '{filter_string}'")
@@ -1538,7 +1544,7 @@ class MzMLAssessor:
             
 
             epsilon = 1e-10
-            if self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] == True and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] == True:
+            if self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] is True and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] is True:
                 
                 try:
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['intensity of z=2 phosphoric_acid'] = self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['fit']['intensity'] - self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['fit']['y_offset']
@@ -1551,7 +1557,7 @@ class MzMLAssessor:
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['z=2 phosphoric_acid to z=2 water_loss intensity ratio'] = 'n/a'
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'] = 'n/a'
             
-            elif self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] == True and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] == False:
+            elif self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] is True and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] is False:
                 
                 try:
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['intensity of z=2 phosphoric_acid'] = epsilon
@@ -1564,7 +1570,7 @@ class MzMLAssessor:
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['z=2 phosphoric_acid to z=2 water_loss intensity ratio'] = 'n/a'
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'] = 'n/a'
             
-            elif self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] == False and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] == True:
+            elif self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['water_z2']['peak']['assessment']['is_found'] is False and self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['assessment']['is_found'] is True:
                 
                 try:
                     self.metadata['files'][self.mzml_file]['summary'][fragmentations]['intensity of z=2 phosphoric_acid'] = self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['fit']['intensity'] - self.metadata['files'][self.mzml_file]['neutral_loss_peaks'][loss_type]['phosphoric_acid_z2']['peak']['fit']['y_offset']
@@ -1648,7 +1654,7 @@ class MzMLAssessor:
         for keys in file_summary:
             if keys in fragmentation_types:
                 try:
-                    if full_results["fragmentation type"] == None:
+                    if full_results["fragmentation type"] is None:
                         full_results["fragmentation type"] = file_summary[keys]["fragmentation_type"]
 
                     elif full_results["fragmentation type"] != file_summary[keys]["fragmentation_type"]:
@@ -1656,7 +1662,7 @@ class MzMLAssessor:
                 except: 
                     pass
                 try:
-                    if full_results['call'] == None or full_results['call'] == 'none':
+                    if full_results['call'] is None or full_results['call'] == 'none':
                         full_results["call"] = file_summary[keys]['labeling']["call"]
                     
                     elif file_summary[keys]['labeling']["call"] == 'none':
@@ -1670,7 +1676,7 @@ class MzMLAssessor:
                 except:
                     pass
                 try:
-                    if full_results['fragmentation tolerance'] == None:
+                    if full_results['fragmentation tolerance'] is None:
                         full_results['fragmentation tolerance'] = file_summary[keys]['tolerance']
                     elif 'no' in file_summary[keys]['tolerance']:
                         pass
@@ -1681,7 +1687,7 @@ class MzMLAssessor:
                     pass
 
                 try:
-                    if full_results['has water_loss'] == None:
+                    if full_results['has water_loss'] is None:
                         full_results['has water_loss'] = file_summary[keys]['has water_loss']
                     elif file_summary[keys]['has water_loss']:
                         full_results['has water_loss'] = file_summary[keys]['has water_loss']
@@ -1689,7 +1695,7 @@ class MzMLAssessor:
                     pass
 
                 try:   
-                    if full_results['has phospho_spectra'] == None:
+                    if full_results['has phospho_spectra'] is None:
                           full_results['has phospho_spectra'] = file_summary[keys]['has phospho_spectra']
                     elif not full_results['has phospho_spectra'] and file_summary[keys]['has phospho_spectra']:
                         full_results['has phospho_spectra'] = file_summary[keys]['has phospho_spectra']
@@ -1774,7 +1780,8 @@ def main():
 
     #### Set verbose
     verbose = params.verbose
-    if verbose is None: verbose = 1
+    if verbose is None:
+        verbose = 1
 
     #### Loop over all the files to ensure that they are really there before starting work
     for file in params.files:
@@ -1794,7 +1801,8 @@ def main():
             if params.refresh is not None and params.refresh > 0:
                 study.metadata['files'][file] = None
             else:
-                if verbose >= 1: eprint(f"INFO: Already have results for '{file}'. Skipping..")
+                if verbose >= 1:
+                    eprint(f"INFO: Already have results for '{file}'. Skipping..")
                 continue
 
         #### Assess the mzML file
@@ -1817,4 +1825,5 @@ def main():
 
 
 #### For command line usage
-if __name__ == "__main__": main()
+if __name__ == "__main__":
+    main()
