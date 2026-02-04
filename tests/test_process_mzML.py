@@ -7,8 +7,8 @@ from deepdiff import DeepDiff
 
 def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
-sys.path.append("../lib")
-from mzML_assessor import MzMLAssessor
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+from runassessor.mzML_assessor import MzMLAssessor
 
 
 # Set up to run assess_mzMLs.py on the test data file 'chlo_6_tiny.mzML.gz'
@@ -17,8 +17,8 @@ print(tests_dir)
 project_root = os.path.dirname(tests_dir)
 print(project_root)
 
-bin_dir = os.path.join(project_root, "bin")
-assess_mzMLs_file = os.path.join(bin_dir, "assess_mzMLs.py")
+bin_dir = os.path.join(project_root, "src")
+assess_mzMLs_file = os.path.join(bin_dir, "runassessor.py")
 
 tests_data_dir = os.path.join(tests_dir, "data")
 input_mzML_file = "chlo_6_tiny.mzML.gz" # Located in tests/data directory which is the current working directory for subprocess
@@ -34,7 +34,7 @@ expected_study_metadata = os.path.join(tests_expected_output_dir, "chlo_6_tiny_s
 def test_assess_mzMLs():
 
     output = subprocess.run(
-        [sys.executable, assess_mzMLs_file, input_mzML_file, '--verbose'],
+        [sys.executable, assess_mzMLs_file, '--verbose', input_mzML_file],
         cwd=tests_data_dir,
         capture_output=True,
         text=True,

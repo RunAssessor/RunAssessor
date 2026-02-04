@@ -10,13 +10,11 @@ import timeit
 from matplotlib.backends.backend_pdf import PdfPages
 from pypdf import PdfReader, PdfWriter
 
-def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
-
-#sys.path.append(os.path.dirname(os.path.realpath(__file__))+"/../lib")
 from runassessor.mzML_assessor import MzMLAssessor
 from runassessor.metadata_handler import MetadataHandler
 from runassessor.graph_generator import GraphGenerator
 
+def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
 
 ####################################################################################################
