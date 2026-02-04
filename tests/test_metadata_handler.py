@@ -1,7 +1,8 @@
 import sys
 import os
-sys.path.append("../lib")
-from metadata_handler import MetadataHandler
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
+from runassessor.metadata_handler import MetadataHandler
 
 
 def test_init_with_various_parameters():
