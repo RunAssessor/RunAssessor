@@ -7,7 +7,6 @@ from deepdiff import DeepDiff
 
 def eprint(*args, **kwargs): print(*args, file=sys.stderr, **kwargs)
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 from runassessor.mzML_assessor import MzMLAssessor
 
 

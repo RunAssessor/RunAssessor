@@ -15,8 +15,8 @@ print(tests_dir)
 project_root = os.path.dirname(tests_dir)
 print(project_root)
 
-bin_dir = os.path.join(project_root, "bin")
-assess_mzMLs_file = os.path.join(bin_dir, "assess_mzMLs.py")
+bin_dir = os.path.join(project_root, "src")
+assess_mzMLs_file = os.path.join(bin_dir, "runassessor.py")
 
 tests_large_files_dir = os.path.join(tests_dir, "large_files")
 input_mzML_file = [     # Located in tests/large_files directory which is the current working directory for subprocess
@@ -82,8 +82,8 @@ def test_large_files_present():
 @pytest.mark.slow
 def test_compare_study_metadatas():     # This test takes ~ 1 hour
 
-    keep_output = False
-    halt_if_different = True
+    keep_output = True
+    halt_if_different = False
 
     study_metadata_files = [
         os.path.join(tests_large_files_dir, "*_study_metadata.json"),
