@@ -1,42 +1,47 @@
 # RunAssessor
-The RunAssessor package provides functionality for assessing a set of input mass spectrometry proteomics mzML files, extracting all information that can
+The RunAssessor package provides functionality for assessing a set of input mass spectrometry proteomics mzML files and extracting all information that can
 be gleaned from the files prior to any attempt to identify the peptides therein.
 
 
 ## Installation
-Clone the repo and install dependencies:
+Assuming that Python 3.x (3.8 or greater) is already installed, simply install the RunAssessor package:
 ```bash
-git clone https://github.com/edeutsch/RunAssessor.git
-cd RunAssesor
-pip install -r requirements.txt
+pip install runassessor
 ```
+Note that `pip` will try to install a command-line script in the customary Python location for such scripts
+and `pip` will ususally warn if the directory is not in the current PATH. For example, under Windows if you
+install as an unprivileged user, it might appear in C:\Users\me\AppData\Roaming\Python\Python312\Scripts.
 
 ## Quick Start
 
-RunAssessor processes mass spectrometry data in the `.mzML` format. `.mzML.gz` files are also supported.
+RunAssessor processes mass spectrometry data in the `.mzML` format. Compressed `.mzML.gz` files are also supported.
 ```bash
-python ~/RunAssessor/bin/assess_mzMLs.py ~/file_path/mass_spec_data.mzML.gz
+runassessor ~/file_path/mass_spec_data.mzML.gz
 ```
 
 RunAssessor can also accept multiple `.mzML` or '.mzML.gz' files at a time 
 ```bash
-python ~/RunAssessor/bin/assess_mzMLs.py --write_sdrf_files --verbose *.mzML
+runassessor --write_sdrf_files --verbose *.mzML
 ```
 
 ### Running a quick test
 
-In `RunAssessor/tests/data/` there is a small `.mzML.gz` file that can be used to quickly try RunAssessor
+In the RunAssessor code repository there is a small `.mzML.gz` file that can be used to quickly try RunAssessor
 ```bash
-cd tests/data
-python ../../bin/assess_mzMLs.py chlo_6_tiny.mzML.gz
+git clone https://github.com/RunAssessor/RunAssessor
+cd RunAssesor
+cd tests
+cd data
+runassessor chlo_6_tiny.mzML.gz
 ```
 
-There is also a set of larger `.mzML.gz` files of different kinds that are used to test RunAssessor in `RunAssessor/tests/large_files/`.
-You can try RunAssessor on those files. Files in `large_files` will generate a more substantial JSON and summary file compared to `chlo_6_tiny.mzML.gz`.
+There is also a set of larger `.mzML.gz` files of different kinds that can be downloaded and used to test RunAssessor in `RunAssessor/tests/large_files/`.
+The files in `large_files` will generate a more substantial JSON and summary file compared to `chlo_6_tiny.mzML.gz`, but take substantially longer to
+download and processing, depending on your Internet and computer speed.
 ```bash
 cd tests/large_files
 python large_test_file_downloader.py
-python ../../bin/assess_mzMLs.py *.mzML.gz   # Or single file of your choice
+runassessor *.mzML.gz   # Or single file of your choice
 ```
 
 
@@ -44,10 +49,12 @@ python ../../bin/assess_mzMLs.py *.mzML.gz   # Or single file of your choice
 
 ## assess_mzMLs.py
 
-The assess_mzMLs.py program is the main RunAssessor program that accepts a set of input mzML files along with various parameters and processes
+The main `runassessor` program  accepts a set of input mzML files along with various parameters and processes
 the mzML files accordingly. This is generally the only program that needs to be executed.
+If multiple files are specified, they will generally be run in parallel using as
+many cores as are available on your computer. 
 
-### Command-line Arguments
+### RunAssessor Command-line Arguments
 
 | Argument | Description | Default | Example |
 |----------|-------------|---------|---------|
