@@ -1459,7 +1459,7 @@ class MzMLAssessor:
             #### If standard deviations have been found, find the difference between them, if none have been found, mention it
             self.metadata['files'][self.mzml_file]['summary'][fragmentations].setdefault('tolerance', {})
 
-            if (self.all_3sigma_values_away['Status']):
+            if self.all_3sigma_values_away['Status']:
                 percentile = 90 #Picks this percentile for the three_sigma value
                 try:
                     if self.fragmentation_units in {"mz", "ppm"}:
@@ -1499,9 +1499,9 @@ class MzMLAssessor:
                     
 
                 except:
-                    self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance'] = 'no tolerance values recorded'
+                    self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance']['warning'] = 'no tolerance values recorded'
             else:
-                self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance'] = 'no tolerance values recorded'
+                self.metadata['files'][self.mzml_file]['summary'][fragmentations]['tolerance']['warning'] = 'no tolerance values recorded'
 
            
 
