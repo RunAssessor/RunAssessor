@@ -1,8 +1,8 @@
-numpy
 lxml
 matplotlib
-scipy
-pyteomics
-pypdf
+numpy
 pandas
+pypdf
+pyteomics
 python-dateutil
+scipy

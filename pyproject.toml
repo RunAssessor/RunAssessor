@@ -22,14 +22,14 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "numpy",
     "lxml",
     "matplotlib",
-    "scipy",
-    "pyteomics",
-    "pypdf",
+    "numpy",
 	"pandas",
-	"python-dateutil"
+    "pypdf",
+    "pyteomics",
+	"python-dateutil",
+    "scipy"
 ]
 
 [tool.setuptools.package-data]
