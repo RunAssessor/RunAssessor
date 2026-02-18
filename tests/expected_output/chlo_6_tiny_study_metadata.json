@@ -1305,12 +1305,20 @@
               "iTRAQ8": 0
             }
           },
-          "tolerance": "no tolerance values recorded",
+          "tolerance": {
+            "recommended fragment tolerance": 20,
+            "recommended fragment tolerance units": "ppm",
+            "warning": "no tolerance values recorded"
+          },
           "z=2 phosphoric_acid to z=2 water_loss intensity ratio": "n/a"
         },
         "combined summary": {
           "call": "none",
-          "fragmentation tolerance": "no tolerance values recorded",
+          "fragmentation tolerance": {
+            "recommended fragment tolerance": 20,
+            "recommended fragment tolerance units": "ppm",
+            "warning": "no tolerance values recorded"
+          },
           "fragmentation type": "HR_HCD",
           "has phospho_spectra": false,
           "has water_loss": false,
