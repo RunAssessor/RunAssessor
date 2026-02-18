@@ -40,7 +40,7 @@ class MzMLAssessor:
 
         #### Store the provided metadata or create a template to work in
         if metadata is None:
-            self.metadata = { 'files': { mzml_file: {} } }
+            self.metadata = { 'files': { mzml_file: {} }, 'state': { 'status': 'OK' } }
         else:
             self.metadata = metadata
             metadata['files'][mzml_file] = {}
