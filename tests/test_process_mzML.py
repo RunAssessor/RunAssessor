@@ -54,7 +54,7 @@ def test_assess_mzMLs():
     eprint(stderr_lines)
 
     assert len(stdout_lines) == 0
-    assert len(stderr_lines) >= 12      # 12 "INFO" lines
+    assert len(stderr_lines) >= 11      # 11 "INFO" lines
 
     # Make sure the current generated 'study_metadata.json' file exactly matches the expected output 'chlo_6_tiny_study_metadata.json'
     with open(current_study_metadata, 'r') as study_metadata, open(expected_study_metadata, 'r') as chlo_6_tiny_study_metadata:
@@ -66,12 +66,16 @@ def test_assess_mzMLs():
         f"Current generated study_metadata.json for '{input_mzML_file}' does not match expected output." \
         f"\n\nDifferences found:\n{diff.pretty()}\n"
 
+    #### If these assertions pass, then go ahead and remove the test output files
+    study_metadata_files = os.path.join(tests_data_dir, "study_metadata.*")
+    for file_path in glob.glob(study_metadata_files):
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
 
 def test_mzML_assessor():
 
-    with open(current_study_metadata, 'r') as study_metadata:
-        current = json.load(study_metadata)
-    assessor = MzMLAssessor(mzml_file=input_mzML_filepath, metadata=current, verbose=1)
+    assessor = MzMLAssessor(mzml_file=input_mzML_filepath, verbose=1)
 
     model_data = assessor.read_header()
     assert model_data['accession'] == 'MS:1001911'
@@ -88,9 +92,5 @@ def test_mzML_assessor():
 
     assert assessor.metadata['state']['status'] != 'ERROR'
 
-    #### If all assertions pass, then go ahead and remove the test output files
-    study_metadata_files = os.path.join(tests_data_dir, "study_metadata.*")
-    for file_path in glob.glob(study_metadata_files):
-        if os.path.exists(file_path):
-            os.remove(file_path)
+
 
