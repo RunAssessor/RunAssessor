@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "runassessor"
-version = "0.9.0"
+version = "0.9.1"
 description = "A tool to extract empircally identifiable metadata from proteomics mass-spectrometry mzML files prior to identification processing."
 authors = [
   { name="Eric Deutsch", email="edeutsch@systemsbiology.org" },
