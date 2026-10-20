@@ -1262,6 +1262,41 @@
         "isolation_window_full_widths": {
           "2.0": 8
         },
+        "isolation_window_last_scans": {
+          "494.79-496.79": {
+            "last_scan_number": 19,
+            "scan_deltas": {}
+          },
+          "551.21-553.21": {
+            "last_scan_number": 90,
+            "scan_deltas": {}
+          },
+          "573.81-575.81": {
+            "last_scan_number": 66,
+            "scan_deltas": {}
+          },
+          "627.88-629.88": {
+            "last_scan_number": 20,
+            "scan_deltas": {}
+          },
+          "675.4-677.4": {
+            "last_scan_number": 44,
+            "scan_deltas": {}
+          },
+          "720.42-722.42": {
+            "last_scan_number": 43,
+            "scan_deltas": {}
+          },
+          "950.53-952.53": {
+            "last_scan_number": 68,
+            "scan_deltas": {}
+          },
+          "994.59-996.59": {
+            "last_scan_number": 67,
+            "scan_deltas": {}
+          }
+        },
+        "isolation_window_periodicities": {},
         "n_HR_ETciD_spectra": 0,
         "n_HR_EThcD_spectra": 0,
         "n_HR_HCD_spectra": 8,
@@ -1274,6 +1309,7 @@
         "n_LR_IT_CID_spectra": 0,
         "n_LR_IT_ETD_spectra": 0,
         "n_charge_2_precursors": 8,
+        "n_different_isolation_windows": 8,
         "n_length_lt10_spectra": 0,
         "n_length_zero_spectra": 0,
         "n_ms0_spectra": 0,
@@ -1894,6 +1930,7 @@
     "n_LR_IT_CID_spectra": 0,
     "n_LR_IT_ETD_spectra": 0,
     "n_charge_2_precursors": 8,
+    "n_different_isolation_windows": 8,
     "n_length_lt10_spectra": 0,
     "n_length_zero_spectra": 0,
     "n_ms0_spectra": 0,
