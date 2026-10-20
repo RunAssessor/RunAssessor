@@ -351,7 +351,9 @@ class MzMLAssessor:
                         window_stats[scan_delta] += n_scans
             stats['n_different_isolation_windows'] = len(stats['isolation_window_last_scans'])
             stats['isolation_window_periodicities'] = window_stats
-            if len(stats['isolation_window_periodicities']) <= 5: # Really should just be 1 instead of huge, but allow for future creativity
+
+            # Look for periodicity. Most current data just as one periodicity, but future data might have more
+            if len(stats['isolation_window_periodicities']) > 0 and len(stats['isolation_window_periodicities']) <= 5:
                 stats['acquisition_type'] = 'DIA'
             else:
                 stats['acquisition_type'] = 'DDA'
