@@ -7,6 +7,7 @@ import multiprocessing
 import copy
 import timeit
 import glob
+import re
 
 from datetime import datetime
 from importlib.metadata import version as distribution_version
@@ -38,6 +39,25 @@ def process_job(job):
     return assessor
 
 
+def get_version():
+    try:
+        return distribution_version("runassessor")
+    except Exception as e:
+        pass
+
+    if True: #try:
+        with open(os.path.dirname(os.path.abspath(__file__)) + "/../../pyproject.toml") as infile:
+            for line in infile:
+                if line.startswith("version"):
+                    match = re.match(r'version = "([\d\.]+)"', line)
+                    if match:
+                        return match.group(1)
+                    break
+    else: #except Exception as e:
+        pass
+
+    return '0.0.0'
+
 
 ####################################################################################################
 #### Main function for command-line usage
@@ -49,7 +69,7 @@ def main():
     argparser.add_argument('--n_threads', action='store', type=int, help='Set the number of files to process in parallel (defaults to number of cores)')
     argparser.add_argument('--write_fragmentation_type_files', action='count', help='If set, write a fragmentation_type file for each mzML')
     argparser.add_argument('--verbose', action='count', help='If set, print more information about ongoing processing' )
-    argparser.add_argument('--version', action='version', version=f'%(prog)s {distribution_version("runassessor")}')
+    argparser.add_argument('--version', action='version', version=f'%(prog)s {get_version()}')
     argparser.add_argument('--write_sdrf_file', action='count', help='If set, then write an SDRF file based on the metadata file')
     argparser.add_argument('--include_sdrf_provenance', action='count', help='If set, then all information written to the SDRF file will have provenance tags (non-standard SDRF)')
     argparser.add_argument('--write_pdfs', action='count', help='If set, then generate a PDF of delta time and ppm graphs from precursor stats')
