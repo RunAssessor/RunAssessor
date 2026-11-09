@@ -549,9 +549,12 @@ class MetadataHandler:
             info_dict["recommended fragment tolerance units"] = frag_units
 
             #### Also update the main data structure with the recommended tolerance information
-            if isinstance(fileinfo['summary']['combined summary']['fragmentation tolerance'], dict):
-                fileinfo['summary']['combined summary']['fragmentation tolerance']['recommended fragment tolerance'] = rec_tol
-                fileinfo['summary']['combined summary']['fragmentation tolerance']['recommended fragment tolerance units'] = frag_units
+            try:
+                if isinstance(fileinfo['summary']['combined summary']['fragmentation tolerance'], dict):
+                    fileinfo['summary']['combined summary']['fragmentation tolerance']['recommended fragment tolerance'] = rec_tol
+                    fileinfo['summary']['combined summary']['fragmentation tolerance']['recommended fragment tolerance units'] = frag_units
+            except Exception as e:
+                eprint(f"WARNING: Missing summary information: {type(e).__name__} - {e}")
 
             #### Collect sigma values
             try:
@@ -586,7 +589,7 @@ class MetadataHandler:
                     all_3sigma_values_away['precursor_found'] = True
                     
             except Exception as e:
-                eprint(f"ERROR: Unable to compute fragmentation tolerance: {type(e).__name__} - {e}")
+                eprint(f"WARNING: Unable to compute fragmentation tolerance: {type(e).__name__} - {e}")
            
 
             # Dynamic exclusion time
@@ -662,17 +665,18 @@ class MetadataHandler:
             info_dict["total z=2 phosphoric_acid to z=2 water_loss intensity ratio"] = ratio
 
             #Info about phospho shifts
-            for keys in fileinfo['summary']:
-                if "HR" in keys:
-                    try:
-                        info_dict[keys + " absolute difference between delta m/z for z=2"] = round(fileinfo['summary'][keys]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'], 5)
-                    except:
-                        info_dict[keys + " absolute difference between delta m/z for z=2"] =  "N/A"
-                elif "LR" in keys:
-                    try:
-                        info_dict[keys + " absolute difference between delta m/z for z=2"] = round(fileinfo['summary'][keys]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'], 2)
-                    except:
-                        info_dict[keys + " absolute difference between delta m/z for z=2"] =  "N/A"
+            if 'summary' in fileinfo:
+                for keys in fileinfo['summary']:
+                    if "HR" in keys:
+                        try:
+                            info_dict[keys + " absolute difference between delta m/z for z=2"] = round(fileinfo['summary'][keys]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'], 5)
+                        except:
+                            info_dict[keys + " absolute difference between delta m/z for z=2"] =  "N/A"
+                    elif "LR" in keys:
+                        try:
+                            info_dict[keys + " absolute difference between delta m/z for z=2"] = round(fileinfo['summary'][keys]['absolute difference in delta m/z for z=2 phosphoric_acid_loss and z=2 water_loss'], 2)
+                        except:
+                            info_dict[keys + " absolute difference between delta m/z for z=2"] =  "N/A"
 
             # Save
             info.append(info_dict)
@@ -857,7 +861,7 @@ class MetadataHandler:
 
                     if key == 'comment[precursor mass tolerance]':
                         if value == '':
-                            if self.metadata['files'][file]['spectra_stats']['high_accuracy_precursors'] == 'true' and self.metadata['files'][file]['summary']['combined summary']['recommended precursor tolerance (ppm)'] != None:
+                            if self.metadata['files'][file]['spectra_stats']['high_accuracy_precursors'] == 'true' and 'summary' in self.metadata['files'][file] and self.metadata['files'][file]['summary']['combined summary']['recommended precursor tolerance (ppm)'] != None:
                                 value = str(self.metadata['files'][file]['summary']['combined summary']['recommended precursor tolerance (ppm)']) + " ppm"
                             else:
                                 value = '3.1 Da'
@@ -866,7 +870,7 @@ class MetadataHandler:
 
                     if key == 'comment[fragment mass tolerance]':
                         if value == '':
-                            if isinstance(self.metadata['files'][file]['summary']['combined summary']['fragmentation tolerance'], dict):
+                            if 'summary' in self.metadata['files'][file] and isinstance(self.metadata['files'][file]['summary']['combined summary']['fragmentation tolerance'], dict):
                                     if self.metadata['files'][file]['summary']['combined summary']['fragmentation tolerance']['recommended fragment tolerance units'] == 'm/z':
                                         units = 'Da'
                                         rec_fmt = lambda v: round(v, 2)
