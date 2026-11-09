@@ -19,6 +19,11 @@ RunAssessor processes mass spectrometry data in the `.mzML` format. Compressed `
 runassessor ~/file_path/mass_spec_data.mzML.gz
 ```
 
+or if your shell doesn't find `runassessor`, you can also run with:
+```bash
+python -m runassessor.runassessor ~/file_path/mass_spec_data.mzML.gz
+```
+
 RunAssessor can also accept multiple `.mzML` or '.mzML.gz' files at a time 
 ```bash
 runassessor --write_sdrf_file --verbose *.mzML
@@ -29,7 +34,7 @@ runassessor --write_sdrf_file --verbose *.mzML
 In the RunAssessor code repository there is a small `.mzML.gz` file that can be used to quickly try RunAssessor
 ```bash
 git clone https://github.com/RunAssessor/RunAssessor
-cd RunAssesor
+cd RunAssessor
 cd tests
 cd data
 runassessor chlo_6_tiny.mzML.gz
