@@ -5,9 +5,11 @@ import os
 import argparse
 import multiprocessing
 import copy
+import timeit
+import glob
+
 from datetime import datetime
 from importlib.metadata import version as distribution_version
-import timeit
 from matplotlib.backends.backend_pdf import PdfPages
 from pypdf import PdfReader, PdfWriter
 
@@ -69,11 +71,21 @@ def main():
 
     #### Loop over all the files to ensure that they are really there before starting work
     n_files = 0
+    globbed_files = None
+    input_files = params.files
     for file in params.files:
         if not os.path.isfile(file):
+            if '*' in file:
+                globbed_files = glob.glob(file)
+                n_files = len(globbed_files)
+                if n_files > 0:
+                    eprint(f"INFO: Globbed {file} to {n_files} files")
+                    input_files = globbed_files
+                    break
             eprint(f"ERROR: File '{file}' not found or not a file")
             return
         n_files += 1
+
     if verbose:
         eprint(f"INFO: Found {n_files} input files to process")
 
@@ -93,7 +105,7 @@ def main():
     jobs = []
 
     #### Loop over all the files and put them in a list of jobs for parallel processing
-    for file in params.files:
+    for file in input_files:
 
         #### If this file is already in the metadata store, purge it and generate new
         if file in study.metadata['files']:
