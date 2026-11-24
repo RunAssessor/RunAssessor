@@ -49,27 +49,45 @@ class CustomMzMLTransformer(MzMLTransformer):
             #print(f"scan={scan_number}")
             previous_precursor_mz = new_spectrum['precursor_information'][0]['mz']
             previous_charge = new_spectrum['precursor_information'][0]['charge']
+            if previous_charge is None:
+                previous_charge = 0
+
+            new_precursor = 0.00
+            new_charge = 0
+            final_precursor_mz = previous_precursor_mz
+            final_charge = previous_charge
+            comment = ''
+
             if scan_number in self.scan_information:
                 new_precursor = self.scan_information[scan_number]['precursor_mz']
                 new_charge = self.scan_information[scan_number]['charge_state']
 
-                new_spectrum['precursor_information'][0]['mz'] = new_precursor
-                new_spectrum['precursor_information'][0]['charge'] = new_charge
+                if previous_charge == 0 or previous_charge == new_charge:
+                    new_spectrum['precursor_information'][0]['mz'] = new_precursor
+                    new_spectrum['precursor_information'][0]['charge'] = new_charge
+                    final_precursor_mz = new_precursor
+                    final_charge = new_charge
+                    comment = 'updated'
+
+                    #### Also update the Trailer Extra if it exists
+                    if 'scan_params' in new_spectrum:
+                        key = '[Thermo Trailer Extra]Monoisotopic M/Z:'
+                        for scan_param in new_spectrum['scan_params']:
+                            if key in scan_param:
+                                scan_param[key] = new_precursor
+
+                else:
+                    comment = 'skip because charge changed'
+
             else:
                 print(f"WARNING: Did not have recorded updated information for scan {scan_number}")
-
-            #### This fails if the previous_charge is None
-            #print(f"{scan_number:6d}\t{previous_precursor_mz:10.4f}\t{previous_charge:2d}\t{new_precursor:10.4f}\t" +
-            #    f"{new_charge:2d}\t{float(new_precursor)-float(previous_precursor_mz):10.4f}\t{int(new_charge)-int(previous_charge):2d}", file=self.log_file_handle )
-
-            #### Special handling for a charge that is null
-            fixed_previous_charge = previous_charge
-            if previous_charge is None:
-                fixed_previous_charge = 0
+                comment = 'missing Monocle information'
 
             #### Write details of the before and after to the log file
-            print(f"{fmt(scan_number,'6d')}\t{fmt(previous_precursor_mz,'10.4f')}\t{fmt(previous_charge,'2d')}\t{fmt(new_precursor,'10.4f')}\t" +
-                f"{fmt(new_charge,'2d')}\t{fmt(float(new_precursor)-float(previous_precursor_mz),'10.4f')}\t{fmt(int(new_charge)-int(fixed_previous_charge),'2d')}", file=self.log_file_handle )
+            print(f"{scan_number:6d}\t{previous_precursor_mz:10.4f}\t{previous_charge:2d}\t{new_precursor:10.4f}\t" +
+                f"{new_charge:2d}\t{float(new_precursor)-float(previous_precursor_mz):10.4f}\t{int(new_charge)-int(previous_charge):2d}" +
+                f"{final_precursor_mz:10.4f}\t{final_charge:2d}\t{float(final_precursor_mz)-float(previous_precursor_mz):10.4f}\t" +
+                f"{int(final_charge)-int(previous_charge):2d}\t{comment}", file=self.log_file_handle )
 
         return new_spectrum
 
@@ -336,8 +354,9 @@ def main():
         return
 
     log_file_handle = open(params.output_filename+'.log', 'w')
-    print("scan_number\tprevious_precursor_mz\tprevious_charge\tnew_precursor_mz\t" +
-          "new_charge\tprecursor_mz_delta\tcharge_delta", file=log_file_handle )
+    print("scan_number\tprevious_precursor_mz\tprevious_charge\tmonocle_precursor_mz\t" +
+          "monocle_charge\tprecursor_mz_delta\tcharge_delta" +
+          "final_precursor_mz\tfinal_charge\tfinal_precursor_mz_delta\tfinal_charge_delta\tcomment", file=log_file_handle )
 
     print(f"INFO: Opening {params.output_filename} for writing")
     CustomMzMLTransformer(infile, outfile, scan_information=reader.scans, log_file_handle=log_file_handle,
